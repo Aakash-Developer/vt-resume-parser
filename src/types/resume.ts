@@ -1,4 +1,4 @@
-export interface ResumeData { 
+export interface ResumeData {
   personal: {
     name: string;
     title: string;
@@ -32,7 +32,7 @@ export interface ResumeData {
     soft?: string[];
     tools?: string[];
     certifications?: string[];
-    coreCompetencies?:string[]
+    coreCompetencies?: string[];
   };
   // Optional Projects Section
   projects?: Array<{
@@ -42,8 +42,8 @@ export interface ResumeData {
     startDate: string;
     endDate: string;
     role: string; // What was the person's role in the project (e.g., developer, lead, etc.)
-    institution?:string;
-    location?:string;
+    institution?: string;
+    location?: string;
     links?: string[]; // Optional links to the project (e.g., GitHub, project website)
   }>;
 }
@@ -54,4 +54,10 @@ export interface JobDescription {
   description: string;
   requirements: string[];
   responsibilities: string[];
+}
+
+export interface ResumeTemplate {
+  id: string;
+  name: string;
+  description: string;
 }
