@@ -1,6 +1,10 @@
+import Analyzer from "@/components/Analyzer";
 
 export default function ResumeEditor() {
   return (
-    <div>ResumeEditor</div>
+    <div>
+      <h1>Resume Editor</h1>
+      <Analyzer/>
+    </div>
   )
 }
