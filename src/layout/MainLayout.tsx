@@ -1,5 +1,5 @@
 import ResumePreview from "@/pages/dashboard/resume/ResumePreview";
-import ResumeEditor from "@/pages/dashboard/resumeEditor/resumeEditor";
+import ResumeEditor from "@/pages/dashboard/resumeEditor/ResumeEditor";
 
 const MainLayout = () => {
   return (

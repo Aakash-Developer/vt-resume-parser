@@ -31,7 +31,7 @@ export async function resumeParserAPI(resumeText: string) {
                     location: string,
                     startDate: string,
                     endDate: string,
-                    description: string,
+                    description: string[],
                     achievements: string[],
                     type?: "full-time" | "internship" | "project" | "co-op"
                   }>,
@@ -48,10 +48,22 @@ export async function resumeParserAPI(resumeText: string) {
                     technical: string[],
                     soft: string[],
                     tools: string[],
-                    certifications: string[]
-                  }
+                    certifications: string[],
+                    coreCompetencies?:string[]
+                  },
+                  projects?: Array<{
+                    title: string,
+                    description: string[],
+                    technologies: string[],
+                    startDate: string,
+                    endDate: string,
+                    role: string,
+                    institution?:string;
+                    location?:string;
+                    links?: string[]
+                  }>
                 }
-                
+
                 Guidelines for parsing:
                 1. Extract all dates in the format "MMM YYYY"
                 2. Include location information for each experience and education entry
@@ -61,6 +73,7 @@ export async function resumeParserAPI(resumeText: string) {
                 6. Extract LinkedIn URL if available
                 7. Include professional title/role
                 8. Handle both bullet points and paragraph descriptions
+                9. **The Projects section is optional. If available, parse it like experience or education.**
                 
                 Return ONLY the JSON object, no additional text.`,
         },
@@ -76,7 +89,7 @@ export async function resumeParserAPI(resumeText: string) {
       throw new Error("No content received from OpenAI");
     }
     const parsedData = JSON.parse(content) as ResumeData;
-    return parsedData
+    return parsedData;
   } catch (error) {
     throw new Error(
       error instanceof Error
