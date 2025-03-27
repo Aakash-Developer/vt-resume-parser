@@ -1,138 +1,91 @@
-import { Document, Page, Text, View, StyleSheet, Font } from "@react-pdf/renderer";
+import { Document, Page, Text, View } from "@react-pdf/renderer";
 import { ResumeData } from "@/types/resume";
+import { createTw } from "react-pdf-tailwind";
 
-// Register fonts
-Font.register({
-  family: "Inter",
-  fonts: [{ src: "https://fonts.gstatic.com/s/inter/v12/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7.woff2" }, { src: "https://fonts.gstatic.com/s/inter/v12/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa2JL7.woff2", fontWeight: 600 }],
-});
-
-const styles = StyleSheet.create({
-  page: {
-    flexDirection: "column",
-    backgroundColor: "#ffffff",
-    padding: 30,
-    fontFamily: "Inter",
-  },
-  header: {
-    marginBottom: 20,
-    borderBottom: 1,
-    borderBottomColor: "#e5e7eb",
-    paddingBottom: 20,
-  },
-  name: {
-    fontSize: 24,
-    fontWeight: 600,
-    marginBottom: 8,
-  },
-  title: {
-    fontSize: 16,
-    color: "#4b5563",
-    marginBottom: 8,
-  },
-  contact: {
-    fontSize: 10,
-    color: "#6b7280",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 16,
-  },
-  section: {
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: 600,
-    marginBottom: 8,
-    color: "#111827",
-  },
-  experienceItem: {
-    marginBottom: 12,
-  },
-  company: {
-    fontSize: 12,
-    fontWeight: 600,
-    marginBottom: 4,
-  },
-  position: {
-    fontSize: 11,
-    color: "#4b5563",
-    marginBottom: 4,
-  },
-  date: {
-    fontSize: 10,
-    color: "#6b7280",
-    marginBottom: 4,
-  },
-  description: {
-    fontSize: 10,
-    marginBottom: 4,
-  },
-  skills: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  skill: {
-    fontSize: 10,
-    backgroundColor: "#f3f4f6",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
+// Initialize Tailwind with proper configuration
+const tw = createTw({
+  theme: {
+    extend: {
+      colors: {
+        slate: {
+          100: '#f1f5f9',
+          500: '#64748b',
+          700: '#334155',
+          800: '#1e293b',
+        },
+        blue: {
+          600: '#2563eb',
+        },
+      },
+      fontSize: {
+        'xs': '10px',
+        'sm': '12px',
+        'base': '14px',
+        'lg': '16px',
+        '3xl': '24px',
+      },
+      spacing: {
+        '1': '4px',
+        '2': '8px',
+        '3': '12px',
+        '4': '16px',
+        '5': '20px',
+        '6': '24px',
+      },
+    },
   },
 });
 
 interface ResumePDFProps {
   data: ResumeData;
-  template: string;
 }
 
-export const ResumePDF = ({ data, template }: ResumePDFProps) => {
+export const ResumePDF = ({ data }: ResumePDFProps) => {
   const { personal, experience, education, skills } = data;
 
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
+      <Page size="A4" style={tw("p-10 bg-white")}>
         {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.name}>{personal.name}</Text>
-          <Text style={styles.title}>{personal.title}</Text>
-          <View style={styles.contact}>
-            <Text>{personal.email}</Text>
-            <Text>{personal.phone}</Text>
-            <Text>{personal.location}</Text>
-            {personal.linkedin && <Text>{personal.linkedin}</Text>}
+        <View style={tw("mb-6 pb-4 border-b-2 border-blue-600")}>
+          <Text style={tw("text-3xl font-bold text-slate-800 mb-1")}>{personal.name}</Text>
+          <Text style={tw("text-lg text-blue-600 font-bold mb-3")}>{personal.title}</Text>
+          <View style={tw("flex-row flex-wrap gap-4")}>
+            <Text style={tw("text-xs text-slate-500")}>{personal.email}</Text>
+            <Text style={tw("text-xs text-slate-500")}>{personal.phone}</Text>
+            <Text style={tw("text-xs text-slate-500")}>{personal.location}</Text>
+            {personal.linkedin && <Text style={tw("text-xs text-slate-500")}>{personal.linkedin}</Text>}
           </View>
         </View>
 
         {/* Summary */}
         {personal.summary && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Summary</Text>
-            <Text style={styles.description}>{personal.summary}</Text>
+          <View style={tw("mb-5")}>
+            <Text style={tw("text-base font-bold text-slate-800 mb-3 uppercase tracking-wider")}>Professional Summary</Text>
+            <Text style={tw("text-sm text-slate-700 leading-relaxed")}>{personal.summary}</Text>
           </View>
         )}
 
         {/* Experience */}
         {experience && experience.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Experience</Text>
+          <View style={tw("mb-5")}>
+            <Text style={tw("text-base font-bold text-slate-800 mb-3 uppercase tracking-wider")}>Professional Experience</Text>
             {experience.map((exp, index) => (
-              <View key={index} style={styles.experienceItem}>
-                <Text style={styles.company}>{exp.company}</Text>
-                <Text style={styles.position}>{exp.position}</Text>
-                <Text style={styles.date}>
+              <View key={index} style={tw("mb-4")}>
+                <Text style={tw("text-sm font-bold text-slate-800 mb-1")}>{exp.company}</Text>
+                <Text style={tw("text-xs text-blue-600 font-bold mb-1")}>{exp.position}</Text>
+                <Text style={tw("text-xs text-slate-500 mb-2")}>
                   {exp.startDate} - {exp.endDate}
                 </Text>
                 {exp.description &&
                   exp.description.map((desc, i) => (
-                    <Text key={i} style={styles.description}>
+                    <Text key={i} style={tw("text-xs text-slate-700 mb-1 leading-relaxed")}>
                       • {desc}
                     </Text>
                   ))}
                 {exp.achievements &&
                   exp.achievements.map((achievement, i) => (
-                    <Text key={i} style={styles.description}>
+                    <Text key={i} style={tw("text-xs text-slate-700 mb-1 leading-relaxed")}>
                       • {achievement}
                     </Text>
                   ))}
@@ -143,18 +96,18 @@ export const ResumePDF = ({ data, template }: ResumePDFProps) => {
 
         {/* Education */}
         {education && education.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Education</Text>
+          <View style={tw("mb-5")}>
+            <Text style={tw("text-base font-bold text-slate-800 mb-3 uppercase tracking-wider")}>Education</Text>
             {education.map((edu, index) => (
-              <View key={index} style={styles.experienceItem}>
-                <Text style={styles.company}>{edu.institution}</Text>
-                <Text style={styles.position}>
+              <View key={index} style={tw("mb-4")}>
+                <Text style={tw("text-sm font-bold text-slate-800 mb-1")}>{edu.institution}</Text>
+                <Text style={tw("text-xs text-blue-600 font-bold mb-1")}>
                   {edu.degree} in {edu.field}
                 </Text>
-                <Text style={styles.date}>
+                <Text style={tw("text-xs text-slate-500 mb-2")}>
                   {edu.startDate} - {edu.endDate}
                 </Text>
-                {edu.gpa && <Text style={styles.description}>GPA: {edu.gpa}</Text>}
+                {edu.gpa && <Text style={tw("text-xs text-slate-700")}>GPA: {edu.gpa}</Text>}
               </View>
             ))}
           </View>
@@ -162,35 +115,76 @@ export const ResumePDF = ({ data, template }: ResumePDFProps) => {
 
         {/* Skills */}
         {skills && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Skills</Text>
-            <View style={styles.skills}>
-              {skills.technical?.map((skill, index) => (
-                <Text key={index} style={styles.skill}>
-                  {skill}
-                </Text>
-              ))}
-              {skills.soft?.map((skill, index) => (
-                <Text key={index} style={styles.skill}>
-                  {skill}
-                </Text>
-              ))}
-              {skills.tools?.map((skill, index) => (
-                <Text key={index} style={styles.skill}>
-                  {skill}
-                </Text>
-              ))}
-              {skills.certifications?.map((skill, index) => (
-                <Text key={index} style={styles.skill}>
-                  {skill}
-                </Text>
-              ))}
-              {skills.coreCompetencies?.map((skill, index) => (
-                <Text key={index} style={styles.skill}>
-                  {skill}
-                </Text>
-              ))}
-            </View>
+          <View style={tw("mb-5")}>
+            {/* Technical Skills */}
+            {skills.technical && skills.technical.length > 0 && (
+              <View style={tw("mb-4")}>
+                <Text style={tw("text-base font-bold text-slate-800 mb-3 uppercase tracking-wider")}>Technical Skills</Text>
+                <View style={tw("flex-row flex-wrap gap-2")}>
+                  {skills.technical.map((skill, index) => (
+                    <Text key={index} style={tw("text-xs bg-slate-100 px-2 py-1 rounded text-slate-800 font-bold")}>
+                      {skill}
+                    </Text>
+                  ))}
+                </View>
+              </View>
+            )}
+
+            {/* Core Competencies */}
+            {skills.coreCompetencies && skills.coreCompetencies.length > 0 && (
+              <View style={tw("mb-4")}>
+                <Text style={tw("text-base font-bold text-slate-800 mb-3 uppercase tracking-wider")}>Core Competencies</Text>
+                <View style={tw("flex-row flex-wrap gap-2")}>
+                  {skills.coreCompetencies.map((skill, index) => (
+                    <Text key={index} style={tw("text-xs bg-slate-100 px-2 py-1 rounded text-slate-800 font-bold")}>
+                      {skill}
+                    </Text>
+                  ))}
+                </View>
+              </View>
+            )}
+
+            {/* Tools */}
+            {skills.tools && skills.tools.length > 0 && (
+              <View style={tw("mb-4")}>
+                <Text style={tw("text-base font-bold text-slate-800 mb-3 uppercase tracking-wider")}>Tools & Technologies</Text>
+                <View style={tw("flex-row flex-wrap gap-2")}>
+                  {skills.tools.map((skill, index) => (
+                    <Text key={index} style={tw("text-xs bg-slate-100 px-2 py-1 rounded text-slate-800 font-bold")}>
+                      {skill}
+                    </Text>
+                  ))}
+                </View>
+              </View>
+            )}
+
+            {/* Soft Skills */}
+            {skills.soft && skills.soft.length > 0 && (
+              <View style={tw("mb-4")}>
+                <Text style={tw("text-base font-bold text-slate-800 mb-3 uppercase tracking-wider")}>Soft Skills</Text>
+                <View style={tw("flex-row flex-wrap gap-2")}>
+                  {skills.soft.map((skill, index) => (
+                    <Text key={index} style={tw("text-xs bg-slate-100 px-2 py-1 rounded text-slate-800 font-bold")}>
+                      {skill}
+                    </Text>
+                  ))}
+                </View>
+              </View>
+            )}
+
+            {/* Certifications */}
+            {skills.certifications && skills.certifications.length > 0 && (
+              <View style={tw("mb-4")}>
+                <Text style={tw("text-base font-bold text-slate-800 mb-3 uppercase tracking-wider")}>Certifications</Text>
+                <View style={tw("flex-row flex-wrap gap-2")}>
+                  {skills.certifications.map((skill, index) => (
+                    <Text key={index} style={tw("text-xs bg-slate-100 px-2 py-1 rounded text-slate-800 font-bold")}>
+                      {skill}
+                    </Text>
+                  ))}
+                </View>
+              </View>
+            )}
           </View>
         )}
       </Page>

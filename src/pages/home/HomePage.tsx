@@ -3,14 +3,21 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { resumeParserAPI } from "@/services/resumeParser";
 import { useMutation } from "@tanstack/react-query";
-import ScreenLoader from "@/components/ScreenLoader";
 import { useDispatch } from "react-redux";
-import { setResume, setJD, setParsedResume } from "@/store/features/app";
+import { setJD, setResume, setParsedResume } from "@/store/features/app";
 import { useNavigate } from "react-router";
+import { Loader2 } from "lucide-react";
 
 const FormSchema = z.object({
   resume: z.string({ message: "Resume details is required." }),
@@ -37,34 +44,31 @@ export default function HomePage() {
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    // Store the raw resume and JD text
-    dispatch(setResume(data.resume));
     if (data.jobDescription) {
       dispatch(setJD(data.jobDescription));
     }
-    // Parse the resume
+    dispatch(setResume(data.resume));
     parseResume(data.resume);
   }
 
-  if (isPending) {
-    return <ScreenLoader />;
-  }
-
   return (
-    <section className="h-screen flex items-center justify-center patternBg">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-full max-w-xl px-10 py-16 shadow-xl rounded-xl bg-white">
-          <div className="grid grid-cols-1 gap-4">
+    <section className="patternBg h-screen flex items-center justify-center">
+      <div className=" w-full max-w-xl mx-auto p-10 bg-white rounded-lg shadow-lg">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
               control={form.control}
               name="resume"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Resume</FormLabel>
+                  <FormLabel>Resume Details</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Paste resume details here..." className="min-h-32 max-h-52" rows={25} {...field} />
+                    <Textarea
+                      placeholder="Paste your resume details here..."
+                      className="min-h-[150px] max-h-[150px]"
+                      {...field}
+                    />
                   </FormControl>
-                  {/* <FormDescription></FormDescription> */}
                   <FormMessage />
                 </FormItem>
               )}
@@ -74,21 +78,24 @@ export default function HomePage() {
               name="jobDescription"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Job Description</FormLabel>
+                  <FormLabel>Job Description (Optional)</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Paste Job Description" className="min-h-32 max-h-52" {...field} rows={25} />
+                    <Textarea
+                      placeholder="Paste the job description here..."
+                      className="min-h-[150px] max-h-[150px]"
+                      {...field}
+                    />
                   </FormControl>
-                  {/* <FormDescription></FormDescription> */}
                   <FormMessage />
                 </FormItem>
               )}
             />
-          </div>
-          <Button disabled={isPending} className="w-full" type="submit">
-            {isPending ? "Please wait..." : "Submit"}
-          </Button>
-        </form>
-      </Form>
+            <Button disabled={isPending}  type="submit" className="w-full disabled:opacity-50">
+              {isPending ? <span className="flex items-center justify-center"><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Please wait...</span> : "Parse Resume"}
+            </Button>
+          </form>
+        </Form>
+      </div>
     </section>
   );
 }
