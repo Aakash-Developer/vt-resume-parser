@@ -1,54 +1,101 @@
-import ResumePreview from "@/pages/dashboard/resume/ResumePreview";
-import ResumeEditor from "@/pages/dashboard/resumeEditor/ResumeEditor";
-import { Button } from "@/components/ui/button";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { resetState } from "@/store/features/app";
-import { useNavigate, Outlet } from "react-router";
-import { Sparkles } from "lucide-react";
+import { useNavigate } from "react-router";
+import { memo, useState } from "react";
+import { PDFViewer, PDFDownloadLink } from "@react-pdf/renderer";
+import { RootState } from "@/store/store";
+import { ATSResumePDF } from "@/components/resume/ATSResumePDF";
+import { Button } from "@/components/ui/button";
+import { Download, Eye } from "lucide-react";
+import { ClassicResumePDF } from "@/components/resume/ClassicResumePDF";
+import { ModernResumePDF } from "@/components/resume/ModernResumePDF";
+import { ResumeData } from "@/types/resume";
 
-const MainLayout = () => {
+const MainLayout = memo(() => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [previewId, setPreviewId] = useState<number | null>(1);
+  const parsedResume = useSelector(
+    (state: RootState) => state.app.parsedResume
+  );
 
   const handleReset = () => {
     dispatch(resetState());
     navigate("/");
   };
 
+  if (!parsedResume) {
+    return <div>No resume data available</div>;
+  }
+
+  function getPreview(data: ResumeData) {
+    switch (previewId) {
+      case 1:
+        return <ClassicResumePDF data={data} />;
+      case 2:
+        return <ModernResumePDF data={data} />;
+      case 3:
+        return <ATSResumePDF data={data} />;
+      default:
+        return <ClassicResumePDF data={data} />;
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b">
-        <div className="container flex h-16 items-center justify-between">
-          <h1 className="text-2xl font-bold">Resume Builder</h1>
-          <div className="flex items-center gap-4">
+    <div className="h-screen bg-background">
+      <div className="grid grid-cols-2 h-full">
+        <div className="p-4 flex flex-col gap-4">
+          <div className="flex justify-between items-center">
             <Button variant="outline" onClick={handleReset}>
-              New Resume
-            </Button>
-            <Button className="bg-primary hover:bg-primary/90">
-              <Sparkles className="mr-2 h-4 w-4" />
-              Generate with AI
+              Back to Upload
             </Button>
           </div>
         </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="h-[calc(100vh-4rem)]">
-        <div className="flex h-full">
-          {/* Editor Section */}
-          <div className="w-1/2 h-full border-r bg-muted/5">
-            <ResumeEditor />
+        <div className=" grid grid-rows-[auto_1fr] gap-4  ">
+          <div>
+            <PDFDownloadLink
+              document={<ATSResumePDF data={parsedResume} />}
+              fileName={`${parsedResume.personal.name.replace(
+                /\s+/g,
+                "_"
+              )}_Resume.pdf`}
+              className="flex items-center gap-2"
+            >
+              {({ loading }) => (
+                <Button disabled={loading}>
+                  {loading ? (
+                    "Generating PDF..."
+                  ) : (
+                    <>
+                      <Download className="w-4 h-4 mr-2" />
+                      Download PDF
+                    </>
+                  )}
+                </Button>
+              )}
+            </PDFDownloadLink>
+            <Button variant="outline" onClick={() => setPreviewId(1)}>
+              <Eye className="w-4 h-4 mr-2" />
+              Preview
+            </Button>
+            <Button variant="outline" onClick={() => setPreviewId(2)}>
+              <Eye className="w-4 h-4 mr-2" />
+              Preview
+            </Button>
+            <Button variant="outline" onClick={() => setPreviewId(3)}>
+              <Eye className="w-4 h-4 mr-2" />
+              Preview
+            </Button>
           </div>
-
-          {/* Preview Section */}
-          <div className="w-1/2 h-full bg-background">
-            <ResumePreview />
-          </div>
+          <PDFViewer showToolbar={false} className="w-full h-full">
+            {getPreview(parsedResume)}
+          </PDFViewer>
         </div>
-      </main>
+      </div>
     </div>
   );
-};
+});
+
+MainLayout.displayName = "MainLayout";
 
 export default MainLayout;
