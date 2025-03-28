@@ -7,14 +7,15 @@ import { RootState } from "@/store/store";
 import { ATSResumePDF } from "@/components/resume/ATSResumePDF";
 import { Button } from "@/components/ui/button";
 import { Download, Eye } from "lucide-react";
-import { ClassicResumePDF } from "@/components/resume/ClassicResumePDF";
 import { ModernResumePDF } from "@/components/resume/ModernResumePDF";
 import { ResumeData } from "@/types/resume";
-
+import { ResumeEditor } from "@/components/resume/ResumeEditor";
+import { ResumePDF } from "@/components/resume/ResumePDF";
+import { ResumePreview } from "@/components/resume/ResumePreview";
+import { ResumeViewer } from "@/components/resume/ResumeViewer";
 const MainLayout = memo(() => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [previewId, setPreviewId] = useState<number | null>(1);
   const parsedResume = useSelector(
     (state: RootState) => state.app.parsedResume
   );
@@ -28,19 +29,6 @@ const MainLayout = memo(() => {
     return <div>No resume data available</div>;
   }
 
-  function getPreview(data: ResumeData) {
-    switch (previewId) {
-      case 1:
-        return <ClassicResumePDF data={data} />;
-      case 2:
-        return <ModernResumePDF data={data} />;
-      case 3:
-        return <ATSResumePDF data={data} />;
-      default:
-        return <ClassicResumePDF data={data} />;
-    }
-  }
-
   return (
     <div className="h-screen bg-background">
       <div className="grid grid-cols-2 h-full">
@@ -50,6 +38,7 @@ const MainLayout = memo(() => {
               Back to Upload
             </Button>
           </div>
+          {/* <ResumeEditor /> */}
         </div>
         <div className=" grid grid-rows-[auto_1fr] gap-4  ">
           <div>
@@ -74,21 +63,10 @@ const MainLayout = memo(() => {
                 </Button>
               )}
             </PDFDownloadLink>
-            <Button variant="outline" onClick={() => setPreviewId(1)}>
-              <Eye className="w-4 h-4 mr-2" />
-              Preview
-            </Button>
-            <Button variant="outline" onClick={() => setPreviewId(2)}>
-              <Eye className="w-4 h-4 mr-2" />
-              Preview
-            </Button>
-            <Button variant="outline" onClick={() => setPreviewId(3)}>
-              <Eye className="w-4 h-4 mr-2" />
-              Preview
-            </Button>
           </div>
-          <PDFViewer showToolbar={false} className="w-full h-full">
-            {getPreview(parsedResume)}
+          <PDFViewer   showToolbar={false} className="w-full h-full">
+            {/* <ModernResumePDF data={parsedResume} /> */}
+            <ATSResumePDF data={parsedResume} />
           </PDFViewer>
         </div>
       </div>
