@@ -7,10 +7,19 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true 
 });
 
+// Cache for parsed resumes
+const resumeCache = new Map<string, ResumeData>();
+
 export async function resumeParserAPI(resumeText: string) {
   try {
+    // Check cache first
+    const cacheKey = resumeText.trim();
+    if (resumeCache.has(cacheKey)) {
+      return resumeCache.get(cacheKey);
+    }
+
     const completion = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-3.5-turbo", // Using faster model
       messages: [
         {
           role: "system",
@@ -49,7 +58,7 @@ export async function resumeParserAPI(resumeText: string) {
                     soft: string[],
                     tools: string[],
                     certifications: string[],
-                    coreCompetencies?:string[]
+                    coreCompetencies: string[]
                   },
                   projects?: Array<{
                     title: string,
@@ -73,7 +82,13 @@ export async function resumeParserAPI(resumeText: string) {
                 6. Extract LinkedIn URL if available
                 7. Include professional title/role
                 8. Handle both bullet points and paragraph descriptions
-                9. **The Projects section is optional. If available, parse it like experience or education.**
+                9. For Core Competencies:
+                   - Look for sections titled "CORE COMPETENCIES", "Core Competencies", or similar
+                   - Split competencies by common separators (|, •, -, etc.)
+                   - Clean up any HTML entities (e.g., &amp; to &)
+                   - Remove any extra whitespace
+                   - Include all competencies as separate items in the array
+                10. **The Projects section is optional. If available, parse it like experience or education.**
                 
                 Return ONLY the JSON object, no additional text.`,
         },
@@ -82,6 +97,8 @@ export async function resumeParserAPI(resumeText: string) {
           content: resumeText,
         },
       ],
+      temperature: 0.1, // Lower temperature for more consistent results
+      max_tokens: 2000, // Limit response size
     });
 
     const content = completion.choices[0].message.content;
@@ -89,6 +106,15 @@ export async function resumeParserAPI(resumeText: string) {
       throw new Error("No content received from OpenAI");
     }
     const parsedData = JSON.parse(content) as ResumeData;
+    
+    // Ensure coreCompetencies is always an array
+    if (!parsedData.skills.coreCompetencies) {
+      parsedData.skills.coreCompetencies = [];
+    }
+    
+    // Cache the result
+    resumeCache.set(cacheKey, parsedData);
+    console.log(parsedData);
     return parsedData;
   } catch (error) {
     throw new Error(

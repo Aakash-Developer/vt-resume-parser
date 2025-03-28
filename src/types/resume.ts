@@ -26,6 +26,7 @@ export interface ResumeData {
     startDate: string;
     endDate: string;
     gpa?: string;
+    achievements: string[];
   }>;
   skills: {
     technical?: string[];
@@ -35,7 +36,7 @@ export interface ResumeData {
     coreCompetencies?: string[];
   };
   // Optional Projects Section
-  projects?: Array<{
+  projects: Array<{
     title: string;
     description: string[];
     technologies: string[]; // The tools/technologies used in the project
