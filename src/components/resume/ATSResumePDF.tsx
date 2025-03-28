@@ -42,10 +42,11 @@ export const ATSResumePDF = ({ data }: ATSResumePDFProps) => {
       <Page size="A4" style={tw("p-8 bg-white")}>
         {/* Header */}
         <View style={tw("mb-6")}>
-          <Text style={tw("text-2xl font-bold text-slate-800 mb-2")}>{personal.name}</Text>
+          <Text style={tw("text-2xl font-bold text-slate-800 mb-2 text-[#ab2034]")}>{personal.name}</Text>
           <Text style={tw("text-base font-bold text-slate-800 mb-2")}>{personal.title}</Text>
           <View style={tw("flex-row flex-wrap gap-4")}>
-            <Text style={tw("text-sm text-slate-700")}>{personal.email}</Text>
+            <Text style={tw("text-sm text-slate-700")}>{personal.email}</Text> 
+
             <Text style={tw("text-sm text-slate-700")}>{personal.phone}</Text>
             <Text style={tw("text-sm text-slate-700")}>{personal.location}</Text>
             {personal.linkedin && <Text style={tw("text-sm text-slate-700")}>{personal.linkedin}</Text>}
@@ -55,7 +56,7 @@ export const ATSResumePDF = ({ data }: ATSResumePDFProps) => {
         {/* Summary */}
         {personal.summary && (
           <View style={tw("mb-6")}>
-            <Text style={tw("text-base font-bold text-slate-800 mb-2")}>PROFESSIONAL SUMMARY</Text>
+            <Text style={tw("text-base font-bold text-slate-800 mb-4")}>PROFESSIONAL SUMMARY</Text>
             <Text style={tw("text-sm text-slate-700 leading-relaxed")}>{personal.summary}</Text>
           </View>
         )}
@@ -63,7 +64,7 @@ export const ATSResumePDF = ({ data }: ATSResumePDFProps) => {
         {/* Experience */}
         {experience && experience.length > 0 && (
           <View style={tw("mb-6")}>
-            <Text style={tw("text-base font-bold text-slate-800 mb-3")}>PROFESSIONAL EXPERIENCE</Text>
+            <Text style={tw("text-base font-bold text-slate-800 pb-4")}>PROFESSIONAL EXPERIENCE</Text>
             {experience.map((exp, index) => (
               <View key={index} style={tw("mb-4")}>
                 <Text style={tw("text-base font-bold text-slate-800")}>{exp.company}</Text>
