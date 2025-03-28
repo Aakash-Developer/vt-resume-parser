@@ -114,6 +114,7 @@ export async function resumeParserAPI(resumeText: string) {
     
     // Cache the result
     resumeCache.set(cacheKey, parsedData);
+    console.log(parsedData);
     return parsedData;
   } catch (error) {
     throw new Error(
