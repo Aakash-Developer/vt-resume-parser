@@ -35,7 +35,66 @@ interface ATSResumePDFProps {
 }
 
 export const ATSResumePDF = ({ data }: ATSResumePDFProps) => {
-  const { personal, experience, education, skills } = data;
+  // Ensure all data is properly initialized with default values
+  const sanitizedData: ResumeData = {
+    personal: {
+      name: data.personal?.name || "",
+      title: data.personal?.title || "",
+      email: data.personal?.email || "",
+      phone: data.personal?.phone || "",
+      location: data.personal?.location || "",
+      linkedin: data.personal?.linkedin || "",
+      summary: data.personal?.summary || "",
+    },
+    experience: Array.isArray(data.experience) ? data.experience.map(exp => ({
+      company: exp.company || "",
+      position: exp.position || "",
+      location: exp.location || "",
+      startDate: exp.startDate || "",
+      endDate: exp.endDate || "",
+      description: Array.isArray(exp.description) ? exp.description : [],
+      achievements: Array.isArray(exp.achievements) ? exp.achievements : [],
+      type: exp.type || "full-time",
+    })) : [],
+    education: Array.isArray(data.education) ? data.education.map(edu => ({
+      institution: edu.institution || "",
+      degree: edu.degree || "",
+      field: edu.field || "",
+      location: edu.location || "",
+      startDate: edu.startDate || "",
+      endDate: edu.endDate || "",
+      gpa: edu.gpa || "",
+      achievements: Array.isArray(edu.achievements) ? edu.achievements : [],
+    })) : [],
+    skills: {
+      technical: Array.isArray(data.skills?.technical) ? data.skills.technical : [],
+      soft: Array.isArray(data.skills?.soft) ? data.skills.soft : [],
+      tools: Array.isArray(data.skills?.tools) ? data.skills.tools : [],
+      certifications: Array.isArray(data.skills?.certifications) ? data.skills.certifications : [],
+      coreCompetencies: Array.isArray(data.skills?.coreCompetencies) ? data.skills.coreCompetencies : [],
+    },
+    projects: Array.isArray(data.projects) ? data.projects.map(proj => ({
+      title: proj.title || "",
+      role: proj.role || "",
+      startDate: proj.startDate || "",
+      endDate: proj.endDate || "",
+      description: Array.isArray(proj.description) ? proj.description : [],
+      technologies: Array.isArray(proj.technologies) ? proj.technologies : [],
+      institution: proj.institution || "",
+      location: proj.location || "",
+    })) : [],
+  };
+
+  const { personal, experience, education, skills, projects } = sanitizedData;
+
+  // Ensure skills object properties are always arrays
+  const safeSkills = {
+    technical: skills.technical || [],
+    soft: skills.soft || [],
+    tools: skills.tools || [],
+    certifications: skills.certifications || [],
+    coreCompetencies: skills.coreCompetencies || [],
+  };
 
   return (
     <Document>
@@ -46,7 +105,6 @@ export const ATSResumePDF = ({ data }: ATSResumePDFProps) => {
           <Text style={tw("text-base font-bold text-slate-800 mb-2")}>{personal.title}</Text>
           <View style={tw("flex-row flex-wrap gap-4")}>
             <Text style={tw("text-sm text-slate-700")}>{personal.email}</Text> 
-
             <Text style={tw("text-sm text-slate-700")}>{personal.phone}</Text>
             <Text style={tw("text-sm text-slate-700")}>{personal.location}</Text>
             {personal.linkedin && <Text style={tw("text-sm text-slate-700")}>{personal.linkedin}</Text>}
@@ -62,7 +120,7 @@ export const ATSResumePDF = ({ data }: ATSResumePDFProps) => {
         )}
 
         {/* Experience */}
-        {experience && experience.length > 0 && (
+        {experience.length > 0 && (
           <View style={tw("mb-6")}>
             <Text style={tw("text-base font-bold text-slate-800 pb-4")}>PROFESSIONAL EXPERIENCE</Text>
             {experience.map((exp, index) => (
@@ -72,13 +130,13 @@ export const ATSResumePDF = ({ data }: ATSResumePDFProps) => {
                 <Text style={tw("text-sm text-slate-700 mb-2")}>
                   {exp.startDate} - {exp.endDate}
                 </Text>
-                {exp.description &&
+                {exp.description.length > 0 &&
                   exp.description.map((desc, i) => (
                     <Text key={i} style={tw("text-sm text-slate-700 mb-1")}>
                       • {desc}
                     </Text>
                   ))}
-                {exp.achievements &&
+                {exp.achievements.length > 0 &&
                   exp.achievements.map((achievement, i) => (
                     <Text key={i} style={tw("text-sm text-slate-700 mb-1")}>
                       • {achievement}
@@ -89,8 +147,47 @@ export const ATSResumePDF = ({ data }: ATSResumePDFProps) => {
           </View>
         )}
 
+        {/* Projects */}
+        {projects.length > 0 && (
+          <View style={tw("mb-6")}>
+            <Text style={tw("text-base font-bold text-slate-800 pb-4")}>PROJECTS</Text>
+            {projects.map((proj, index) => (
+              <View key={index} style={tw("mb-4")}>
+                <Text style={tw("text-base font-bold text-slate-800")}>{proj.title}</Text>
+                {proj.role && (
+                  <Text style={tw("text-sm font-bold text-slate-800")}>{proj.role}</Text>
+                )}
+                <Text style={tw("text-sm text-slate-700 mb-2")}>
+                  {proj.startDate} - {proj.endDate}
+                </Text>
+                {proj.description.length > 0 &&
+                  proj.description.map((desc, i) => (
+                    <Text key={i} style={tw("text-sm text-slate-700 mb-1")}>
+                      • {desc}
+                    </Text>
+                  ))}
+                {proj.technologies.length > 0 && (
+                  <Text style={tw("text-sm text-slate-700 mt-2")}>
+                    Technologies: {proj.technologies.join(", ")}
+                  </Text>
+                )}
+                {proj.institution && (
+                  <Text style={tw("text-sm text-slate-700")}>
+                    Institution: {proj.institution}
+                  </Text>
+                )}
+                {proj.location && (
+                  <Text style={tw("text-sm text-slate-700")}>
+                    Location: {proj.location}
+                  </Text>
+                )}
+              </View>
+            ))}
+          </View>
+        )}
+
         {/* Education */}
-        {education && education.length > 0 && (
+        {education.length > 0 && (
           <View style={tw("mb-6")}>
             <Text style={tw("text-base font-bold text-slate-800 mb-3")}>EDUCATION</Text>
             {education.map((edu, index) => (
@@ -103,67 +200,71 @@ export const ATSResumePDF = ({ data }: ATSResumePDFProps) => {
                   {edu.startDate} - {edu.endDate}
                 </Text>
                 {edu.gpa && <Text style={tw("text-sm text-slate-700")}>GPA: {edu.gpa}</Text>}
+                {edu.achievements.length > 0 &&
+                  edu.achievements.map((achievement, i) => (
+                    <Text key={i} style={tw("text-sm text-slate-700 mb-1")}>
+                      • {achievement}
+                    </Text>
+                  ))}
               </View>
             ))}
           </View>
         )}
 
         {/* Skills */}
-        {skills && (
-          <View>
-            <Text style={tw("text-base font-bold text-slate-800 mb-3")}>SKILLS</Text>
-            
-            {/* Technical Skills */}
-            {skills.technical && skills.technical.length > 0 && (
-              <View style={tw("mb-3")}>
-                <Text style={tw("text-sm font-bold text-slate-800 mb-2")}>Technical Skills:</Text>
-                <Text style={tw("text-sm text-slate-700")}>
-                  {skills.technical.join(" • ")}
-                </Text>
-              </View>
-            )}
+        <View>
+          <Text style={tw("text-base font-bold text-slate-800 mb-3")}>SKILLS</Text>
+          
+          {/* Technical Skills */}
+          {safeSkills.technical.length > 0 && (
+            <View style={tw("mb-3")}>
+              <Text style={tw("text-sm font-bold text-slate-800 mb-2")}>Technical Skills:</Text>
+              <Text style={tw("text-sm text-slate-700")}>
+                {safeSkills.technical.join(" • ")}
+              </Text>
+            </View>
+          )}
 
-            {/* Core Competencies */}
-            {skills.coreCompetencies && skills.coreCompetencies.length > 0 && (
-              <View style={tw("mb-3")}>
-                <Text style={tw("text-sm font-bold text-slate-800 mb-2")}>Core Competencies:</Text>
-                <Text style={tw("text-sm text-slate-700")}>
-                  {skills.coreCompetencies.join(" | ")}
-                </Text>
-              </View>
-            )}
+          {/* Core Competencies */}
+          {safeSkills.coreCompetencies.length > 0 && (
+            <View style={tw("mb-3")}>
+              <Text style={tw("text-sm font-bold text-slate-800 mb-2")}>Core Competencies:</Text>
+              <Text style={tw("text-sm text-slate-700")}>
+                {safeSkills.coreCompetencies.join(" | ")}
+              </Text>
+            </View>
+          )}
 
-            {/* Tools */}
-            {skills.tools && skills.tools.length > 0 && (
-              <View style={tw("mb-3")}>
-                <Text style={tw("text-sm font-bold text-slate-800 mb-2")}>Tools & Technologies:</Text>
-                <Text style={tw("text-sm text-slate-700")}>
-                  {skills.tools.join(" • ")}
-                </Text>
-              </View>
-            )}
+          {/* Tools */}
+          {safeSkills.tools.length > 0 && (
+            <View style={tw("mb-3")}>
+              <Text style={tw("text-sm font-bold text-slate-800 mb-2")}>Tools & Technologies:</Text>
+              <Text style={tw("text-sm text-slate-700")}>
+                {safeSkills.tools.join(" • ")}
+              </Text>
+            </View>
+          )}
 
-            {/* Soft Skills */}
-            {skills.soft && skills.soft.length > 0 && (
-              <View style={tw("mb-3")}>
-                <Text style={tw("text-sm font-bold text-slate-800 mb-2")}>Soft Skills:</Text>
-                <Text style={tw("text-sm text-slate-700")}>
-                  {skills.soft.join(" • ")}
-                </Text>
-              </View>
-            )}
+          {/* Soft Skills */}
+          {safeSkills.soft.length > 0 && (
+            <View style={tw("mb-3")}>
+              <Text style={tw("text-sm font-bold text-slate-800 mb-2")}>Soft Skills:</Text>
+              <Text style={tw("text-sm text-slate-700")}>
+                {safeSkills.soft.join(" • ")}
+              </Text>
+            </View>
+          )}
 
-            {/* Certifications */}
-            {skills.certifications && skills.certifications.length > 0 && (
-              <View>
-                <Text style={tw("text-sm font-bold text-slate-800 mb-2")}>Certifications:</Text>
-                <Text style={tw("text-sm text-slate-700")}>
-                  {skills.certifications.join(" • ")}
-                </Text>
-              </View>
-            )}
-          </View>
-        )}
+          {/* Certifications */}
+          {safeSkills.certifications.length > 0 && (
+            <View>
+              <Text style={tw("text-sm font-bold text-slate-800 mb-2")}>Certifications:</Text>
+              <Text style={tw("text-sm text-slate-700")}>
+                {safeSkills.certifications.join(" • ")}
+              </Text>
+            </View>
+          )}
+        </View>
       </Page>
     </Document>
   );

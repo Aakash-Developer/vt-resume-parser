@@ -79,3 +79,17 @@ export async function generateEducationContent(jd: string | null, institution: s
     achievements: content?.split('\n').filter(Boolean) || []
   };
 } 
+
+
+export async function generateSummaryContent(jd: string | null, summary: string) {
+  const prompt = jd
+    ? `Write a professional summary based on the following job description: ${jd}
+    Focus on highlighting relevant skills, experience, and achievements that match the job requirements.
+    Write the summary directly without any prefix or header.`
+    : `Write a professional summary based on the following content: ${summary}
+    Focus on creating a compelling narrative that highlights key strengths and career objectives.
+    Write the summary directly without any prefix or header.`;
+
+  const content = await generateAIContent(prompt, 'summary');
+  return content?.trim() || '';
+}
