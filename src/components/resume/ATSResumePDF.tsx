@@ -35,7 +35,6 @@ interface ATSResumePDFProps {
 }
 
 export const ATSResumePDF = ({ data }: ATSResumePDFProps) => {
-<<<<<<< HEAD
   // Ensure all data is properly initialized with default values
   const sanitizedData: ResumeData = {
     personal: {
@@ -96,9 +95,6 @@ export const ATSResumePDF = ({ data }: ATSResumePDFProps) => {
     certifications: skills.certifications || [],
     coreCompetencies: skills.coreCompetencies || [],
   };
-=======
-  const { personal, experience, education, skills } = data;
->>>>>>> 76ee091029fb8a55432c9bbfe6277df6d4447b8e
 
   return (
     <Document>
@@ -109,10 +105,6 @@ export const ATSResumePDF = ({ data }: ATSResumePDFProps) => {
           <Text style={tw("text-base font-bold text-slate-800 mb-2")}>{personal.title}</Text>
           <View style={tw("flex-row flex-wrap gap-4")}>
             <Text style={tw("text-sm text-slate-700")}>{personal.email}</Text> 
-<<<<<<< HEAD
-=======
-
->>>>>>> 76ee091029fb8a55432c9bbfe6277df6d4447b8e
             <Text style={tw("text-sm text-slate-700")}>{personal.phone}</Text>
             <Text style={tw("text-sm text-slate-700")}>{personal.location}</Text>
             {personal.linkedin && <Text style={tw("text-sm text-slate-700")}>{personal.linkedin}</Text>}
@@ -128,11 +120,7 @@ export const ATSResumePDF = ({ data }: ATSResumePDFProps) => {
         )}
 
         {/* Experience */}
-<<<<<<< HEAD
         {experience.length > 0 && (
-=======
-        {experience && experience.length > 0 && (
->>>>>>> 76ee091029fb8a55432c9bbfe6277df6d4447b8e
           <View style={tw("mb-6")}>
             <Text style={tw("text-base font-bold text-slate-800 pb-4")}>PROFESSIONAL EXPERIENCE</Text>
             {experience.map((exp, index) => (
@@ -142,21 +130,13 @@ export const ATSResumePDF = ({ data }: ATSResumePDFProps) => {
                 <Text style={tw("text-sm text-slate-700 mb-2")}>
                   {exp.startDate} - {exp.endDate}
                 </Text>
-<<<<<<< HEAD
                 {exp.description.length > 0 &&
-=======
-                {exp.description &&
->>>>>>> 76ee091029fb8a55432c9bbfe6277df6d4447b8e
                   exp.description.map((desc, i) => (
                     <Text key={i} style={tw("text-sm text-slate-700 mb-1")}>
                       • {desc}
                     </Text>
                   ))}
-<<<<<<< HEAD
                 {exp.achievements.length > 0 &&
-=======
-                {exp.achievements &&
->>>>>>> 76ee091029fb8a55432c9bbfe6277df6d4447b8e
                   exp.achievements.map((achievement, i) => (
                     <Text key={i} style={tw("text-sm text-slate-700 mb-1")}>
                       • {achievement}
@@ -167,7 +147,6 @@ export const ATSResumePDF = ({ data }: ATSResumePDFProps) => {
           </View>
         )}
 
-<<<<<<< HEAD
         {/* Projects */}
         {projects.length > 0 && (
           <View style={tw("mb-6")}>
@@ -209,10 +188,6 @@ export const ATSResumePDF = ({ data }: ATSResumePDFProps) => {
 
         {/* Education */}
         {education.length > 0 && (
-=======
-        {/* Education */}
-        {education && education.length > 0 && (
->>>>>>> 76ee091029fb8a55432c9bbfe6277df6d4447b8e
           <View style={tw("mb-6")}>
             <Text style={tw("text-base font-bold text-slate-800 mb-3")}>EDUCATION</Text>
             {education.map((edu, index) => (
@@ -225,22 +200,18 @@ export const ATSResumePDF = ({ data }: ATSResumePDFProps) => {
                   {edu.startDate} - {edu.endDate}
                 </Text>
                 {edu.gpa && <Text style={tw("text-sm text-slate-700")}>GPA: {edu.gpa}</Text>}
-<<<<<<< HEAD
                 {edu.achievements.length > 0 &&
                   edu.achievements.map((achievement, i) => (
                     <Text key={i} style={tw("text-sm text-slate-700 mb-1")}>
                       • {achievement}
                     </Text>
                   ))}
-=======
->>>>>>> 76ee091029fb8a55432c9bbfe6277df6d4447b8e
               </View>
             ))}
           </View>
         )}
 
         {/* Skills */}
-<<<<<<< HEAD
         <View>
           <Text style={tw("text-base font-bold text-slate-800 mb-3")}>SKILLS</Text>
           
@@ -294,63 +265,6 @@ export const ATSResumePDF = ({ data }: ATSResumePDFProps) => {
             </View>
           )}
         </View>
-=======
-        {skills && (
-          <View>
-            <Text style={tw("text-base font-bold text-slate-800 mb-3")}>SKILLS</Text>
-            
-            {/* Technical Skills */}
-            {skills.technical && skills.technical.length > 0 && (
-              <View style={tw("mb-3")}>
-                <Text style={tw("text-sm font-bold text-slate-800 mb-2")}>Technical Skills:</Text>
-                <Text style={tw("text-sm text-slate-700")}>
-                  {skills.technical.join(" • ")}
-                </Text>
-              </View>
-            )}
-
-            {/* Core Competencies */}
-            {skills.coreCompetencies && skills.coreCompetencies.length > 0 && (
-              <View style={tw("mb-3")}>
-                <Text style={tw("text-sm font-bold text-slate-800 mb-2")}>Core Competencies:</Text>
-                <Text style={tw("text-sm text-slate-700")}>
-                  {skills.coreCompetencies.join(" | ")}
-                </Text>
-              </View>
-            )}
-
-            {/* Tools */}
-            {skills.tools && skills.tools.length > 0 && (
-              <View style={tw("mb-3")}>
-                <Text style={tw("text-sm font-bold text-slate-800 mb-2")}>Tools & Technologies:</Text>
-                <Text style={tw("text-sm text-slate-700")}>
-                  {skills.tools.join(" • ")}
-                </Text>
-              </View>
-            )}
-
-            {/* Soft Skills */}
-            {skills.soft && skills.soft.length > 0 && (
-              <View style={tw("mb-3")}>
-                <Text style={tw("text-sm font-bold text-slate-800 mb-2")}>Soft Skills:</Text>
-                <Text style={tw("text-sm text-slate-700")}>
-                  {skills.soft.join(" • ")}
-                </Text>
-              </View>
-            )}
-
-            {/* Certifications */}
-            {skills.certifications && skills.certifications.length > 0 && (
-              <View>
-                <Text style={tw("text-sm font-bold text-slate-800 mb-2")}>Certifications:</Text>
-                <Text style={tw("text-sm text-slate-700")}>
-                  {skills.certifications.join(" • ")}
-                </Text>
-              </View>
-            )}
-          </View>
-        )}
->>>>>>> 76ee091029fb8a55432c9bbfe6277df6d4447b8e
       </Page>
     </Document>
   );

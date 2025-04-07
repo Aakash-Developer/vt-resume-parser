@@ -78,7 +78,6 @@ export async function generateEducationContent(jd: string | null, institution: s
   return {
     achievements: content?.split('\n').filter(Boolean) || []
   };
-<<<<<<< HEAD
 } 
 
 
@@ -94,6 +93,3 @@ export async function generateSummaryContent(jd: string | null, summary: string)
   const content = await generateAIContent(prompt, 'summary');
   return content?.trim() || '';
 }
-=======
-} 
->>>>>>> 76ee091029fb8a55432c9bbfe6277df6d4447b8e
