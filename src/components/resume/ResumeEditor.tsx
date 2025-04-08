@@ -2,26 +2,29 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { setParsedResume } from "@/store/features/app";
 import { ResumeData } from "@/types/resume";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Bot, Plus, Trash2, Loader2 } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
-import { generateExperienceContent, generateSummaryContent } from "@/utils/openai";
+import {
+  generateExperienceContent,
+  generateSummaryContent,
+} from "@/utils/openai";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const ResumeEditor = () => {
   const dispatch = useDispatch();
-  const parsedResume = useSelector((state: RootState) => state.app.parsedResume);
+  const parsedResume = useSelector(
+    (state: RootState) => state.app.parsedResume
+  );
   const jd = useSelector((state: RootState) => state.app.jd);
   const [resumeData, setResumeData] = useState<ResumeData | null>(null);
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
-  const [isGeneratingExperience, setIsGeneratingExperience] = useState<number | null>(null);
+  const [isGeneratingExperience, setIsGeneratingExperience] = useState<
+    number | null
+  >(null);
+  const [activeTab, setActiveTab] = useState("personal");
 
   // Initialize resumeData when parsedResume changes
   useEffect(() => {
@@ -43,7 +46,7 @@ const ResumeEditor = () => {
         linkedin: data.personal.linkedin || "",
         summary: data.personal.summary || "",
       },
-      experience: data.experience.map(exp => ({
+      experience: data.experience.map((exp) => ({
         company: exp.company || "",
         position: exp.position || "",
         location: exp.location || "",
@@ -53,7 +56,7 @@ const ResumeEditor = () => {
         achievements: exp.achievements?.length ? exp.achievements : [],
         type: exp.type || "full-time",
       })),
-      education: data.education.map(edu => ({
+      education: data.education.map((edu) => ({
         institution: edu.institution || "",
         degree: edu.degree || "",
         field: edu.field || "",
@@ -67,10 +70,14 @@ const ResumeEditor = () => {
         technical: data.skills.technical?.length ? data.skills.technical : [],
         soft: data.skills.soft?.length ? data.skills.soft : [],
         tools: data.skills.tools?.length ? data.skills.tools : [],
-        certifications: data.skills.certifications?.length ? data.skills.certifications : [],
-        coreCompetencies: data.skills.coreCompetencies?.length ? data.skills.coreCompetencies : [],
+        certifications: data.skills.certifications?.length
+          ? data.skills.certifications
+          : [],
+        coreCompetencies: data.skills.coreCompetencies?.length
+          ? data.skills.coreCompetencies
+          : [],
       },
-      projects: data.projects.map(proj => ({
+      projects: data.projects.map((proj) => ({
         title: proj.title || "",
         description: proj.description?.length ? proj.description : [""],
         technologies: proj.technologies?.length ? proj.technologies : [],
@@ -99,7 +106,10 @@ const ResumeEditor = () => {
     return <div>Loading...</div>;
   }
 
-  const handlePersonalChange = (field: keyof ResumeData["personal"], value: string) => {
+  const handlePersonalChange = (
+    field: keyof ResumeData["personal"],
+    value: string
+  ) => {
     setResumeData((prev) => {
       if (!prev) return null;
       return {
@@ -122,7 +132,9 @@ const ResumeEditor = () => {
       return {
         ...prev,
         experience: prev.experience.map((exp, i) =>
-          i === index ? { ...exp, [field]: value || (Array.isArray(value) ? [""] : "") } : exp
+          i === index
+            ? { ...exp, [field]: value || (Array.isArray(value) ? [""] : "") }
+            : exp
         ),
       };
     });
@@ -144,7 +156,10 @@ const ResumeEditor = () => {
     });
   };
 
-  const handleSkillsChange = (category: keyof ResumeData["skills"], value: string[]) => {
+  const handleSkillsChange = (
+    category: keyof ResumeData["skills"],
+    value: string[]
+  ) => {
     setResumeData((prev) => {
       if (!prev) return null;
       return {
@@ -167,7 +182,9 @@ const ResumeEditor = () => {
       return {
         ...prev,
         projects: prev.projects.map((proj, i) =>
-          i === index ? { ...proj, [field]: value || (Array.isArray(value) ? [] : "") } : proj
+          i === index
+            ? { ...proj, [field]: value || (Array.isArray(value) ? [] : "") }
+            : proj
         ),
       };
     });
@@ -265,41 +282,49 @@ const ResumeEditor = () => {
       const newProjects = prev.projects.filter((_, i) => i !== index);
       return {
         ...prev,
-        projects: newProjects.length === 0 ? [{
-          title: "",
-          description: [""],
-          technologies: [],
-          startDate: "",
-          endDate: "",
-          role: "",
-          institution: "",
-          location: "",
-          links: [],
-        }] : newProjects,
+        projects:
+          newProjects.length === 0
+            ? [
+                {
+                  title: "",
+                  description: [""],
+                  technologies: [],
+                  startDate: "",
+                  endDate: "",
+                  role: "",
+                  institution: "",
+                  location: "",
+                  links: [],
+                },
+              ]
+            : newProjects,
       };
     });
   };
 
   const handleGenerateSummary = async () => {
     if (!resumeData) return;
-    
+
     try {
       setIsGeneratingSummary(true);
-      const generatedSummary = await generateSummaryContent(jd, resumeData.personal.summary);
+      const generatedSummary = await generateSummaryContent(
+        jd,
+        resumeData.personal.summary
+      );
       if (generatedSummary) {
-        setResumeData(prev => {
+        setResumeData((prev) => {
           if (!prev) return null;
           return {
             ...prev,
             personal: {
               ...prev.personal,
-              summary: generatedSummary
-            }
+              summary: generatedSummary,
+            },
           };
         });
       }
     } catch (error) {
-      console.error('Error generating summary:', error);
+      console.error("Error generating summary:", error);
     } finally {
       setIsGeneratingSummary(false);
     }
@@ -307,27 +332,29 @@ const ResumeEditor = () => {
 
   const handleGenerateExperience = async (index: number) => {
     if (!resumeData) return;
-    
+
     try {
       setIsGeneratingExperience(index);
       const generatedDescription = await generateExperienceContent(
-        jd, 
+        jd,
         resumeData.experience[index].company,
         resumeData.experience[index].position
       );
       if (generatedDescription) {
-        setResumeData(prev => {
+        setResumeData((prev) => {
           if (!prev) return null;
           return {
             ...prev,
-            experience: prev.experience.map((exp, i) => 
-              i === index ? { ...exp, description: generatedDescription.description } : exp
-            )
+            experience: prev.experience.map((exp, i) =>
+              i === index
+                ? { ...exp, description: generatedDescription.description }
+                : exp
+            ),
           };
         });
       }
     } catch (error) {
-      console.error('Error generating experience description:', error);
+      console.error("Error generating experience description:", error);
     } finally {
       setIsGeneratingExperience(null);
     }
@@ -335,52 +362,66 @@ const ResumeEditor = () => {
 
   return (
     <div className="space-y-4">
-      <Accordion type="single" collapsible className="w-full space-y-2">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <div className="sticky top-0 bg-white z-10">
+          <TabsList className="grid grid-cols-5 mb-4">
+            <TabsTrigger value="personal">Personal</TabsTrigger>
+            <TabsTrigger value="experience">Experience</TabsTrigger>
+            <TabsTrigger value="education">Education</TabsTrigger>
+            <TabsTrigger value="skills">Skills</TabsTrigger>
+            <TabsTrigger value="projects">Projects</TabsTrigger>
+          </TabsList>
+        </div>
+
         {/* Personal Information */}
-        <AccordionItem value="personal" className="rounded-lg">
-          <AccordionTrigger className="p-2">Personal Information</AccordionTrigger>
-          <AccordionContent className="space-y-4 p-2">
-            <div className="space-y-2">
-              <Input
-                placeholder="Name"
-                value={resumeData.personal.name}
-                onChange={(e) => handlePersonalChange("name", e.target.value)}
-              />
-              <Input
-                placeholder="Title"
-                value={resumeData.personal.title}
-                onChange={(e) => handlePersonalChange("title", e.target.value)}
-              />
-              <Input
-                placeholder="Email"
-                value={resumeData.personal.email}
-                onChange={(e) => handlePersonalChange("email", e.target.value)}
-              />
-              <Input
-                placeholder="Phone"
-                value={resumeData.personal.phone}
-                onChange={(e) => handlePersonalChange("phone", e.target.value)}
-              />
-              <Input
-                placeholder="Location"
-                value={resumeData.personal.location}
-                onChange={(e) => handlePersonalChange("location", e.target.value)}
-              />
-              <Input
-                placeholder="LinkedIn"
-                value={resumeData.personal.linkedin}
-                onChange={(e) => handlePersonalChange("linkedin", e.target.value)}
-              />
-              <div className="flex flex-col justify-end">
+        <TabsContent
+          value="personal"
+          className="space-y-4 p-4 border rounded-lg"
+        >
+          <h3 className="text-lg font-medium mb-4">Personal Information</h3>
+          <div className="space-y-2">
+            <Input
+              placeholder="Name"
+              value={resumeData.personal.name}
+              onChange={(e) => handlePersonalChange("name", e.target.value)}
+            />
+            <Input
+              placeholder="Title"
+              value={resumeData.personal.title}
+              onChange={(e) => handlePersonalChange("title", e.target.value)}
+            />
+            <Input
+              placeholder="Email"
+              value={resumeData.personal.email}
+              onChange={(e) => handlePersonalChange("email", e.target.value)}
+            />
+            <Input
+              placeholder="Phone"
+              value={resumeData.personal.phone}
+              onChange={(e) => handlePersonalChange("phone", e.target.value)}
+            />
+            <Input
+              placeholder="Location"
+              value={resumeData.personal.location}
+              onChange={(e) => handlePersonalChange("location", e.target.value)}
+            />
+            <Input
+              placeholder="LinkedIn"
+              value={resumeData.personal.linkedin}
+              onChange={(e) => handlePersonalChange("linkedin", e.target.value)}
+            />
+            <div className="flex flex-col justify-end">
               <Textarea
                 placeholder="Summary"
                 className="rounded-b-none"
                 value={resumeData.personal.summary}
-                onChange={(e) => handlePersonalChange("summary", e.target.value)}
+                onChange={(e) =>
+                  handlePersonalChange("summary", e.target.value)
+                }
               />
-              <Button 
-                onClick={handleGenerateSummary} 
-                variant="outline" 
+              <Button
+                onClick={handleGenerateSummary}
+                variant="outline"
                 disabled={isGeneratingSummary}
                 className="flex items-center gap-2 rounded-t-none bg-gradient-to-r from-blue-500 to-blue-600 text-white"
               >
@@ -394,17 +435,16 @@ const ResumeEditor = () => {
                   </>
                 )}
               </Button>
-              </div>
             </div>
-          </AccordionContent>
-        </AccordionItem>
+          </div>
+        </TabsContent>
 
         {/* Experience */}
-        <AccordionItem value="experience" className="rounded-lg">
-          <AccordionTrigger className="p-2">Experience</AccordionTrigger>
-          <AccordionContent className="space-y-4 p-2">
+        <TabsContent value="experience" className="space-y-4 p-4  rounded-lg">
+          {/* <h3 className="text-lg font-medium mb-4">Experience</h3> */}
+          <div className=" grid grid-cols-2 gap-4 ">
             {resumeData.experience.map((exp, index) => (
-              <div key={index} className="space-y-2 p-4 border rounded-lg">
+              <div key={index} className="space-y-2 p-4 shadow-md rounded-lg">
                 <div className="flex justify-between items-center">
                   <h4 className="font-medium">Experience {index + 1}</h4>
                   <Button
@@ -453,49 +493,50 @@ const ResumeEditor = () => {
                   />
                 </div>
                 <div>
-                <Textarea
-                  placeholder="Description"
-                  value={exp.description.join("\n")}
-                  onChange={(e) =>
-                    handleExperienceChange(
+                  <Textarea
+                    placeholder="Description"
+                    value={exp.description.join("\n")}
+                    onChange={(e) =>
+                      handleExperienceChange(
                         index,
                         "description",
                         e.target.value.split("\n")
-                    )
-                }
-                />
-                <Button 
-                onClick={() => handleGenerateExperience(index)} 
-                variant="outline" 
-                disabled={isGeneratingExperience === index}
-                className="flex items-center gap-2 rounded-t-none bg-gradient-to-r from-blue-500 to-blue-600 text-white"
-              >
-                {isGeneratingExperience === index ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" /> Generating...
-                  </>
-                ) : (
-                  <>
-                    <Bot className="h-4 w-4" /> write with AI
-                  </>
-                )}
-              </Button>
+                      )
+                    }
+                  />
+                  <Button
+                    onClick={() => handleGenerateExperience(index)}
+                    variant="outline"
+                    disabled={isGeneratingExperience === index}
+                    className="flex items-center gap-2 rounded-t-none bg-gradient-to-r from-blue-500 to-blue-600 text-white"
+                  >
+                    {isGeneratingExperience === index ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />{" "}
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Bot className="h-4 w-4" /> write with AI
+                      </>
+                    )}
+                  </Button>
                 </div>
               </div>
             ))}
-            <Button onClick={addExperience} className="w-full">
-              <Plus className="h-4 w-4 mr-2" />
-              Add Experience
-            </Button>
-          </AccordionContent>
-        </AccordionItem>
+          </div>
+          <Button onClick={addExperience} className="w-full">
+            <Plus className="h-4 w-4 mr-2" />
+            Add Experience
+          </Button>
+        </TabsContent>
 
         {/* Education */}
-        <AccordionItem value="education" className="rounded-lg">
-          <AccordionTrigger className="p-2">Education</AccordionTrigger>
-          <AccordionContent className="space-y-4 p-2">
+        <TabsContent value="education" className="space-y-4 p-4  rounded-lg">
+          {/* <h3 className="text-lg font-medium mb-4">Education</h3> */}
+          <div className=" grid grid-cols-2 gap-4 ">
             {resumeData.education.map((edu, index) => (
-              <div key={index} className="space-y-2 p-4 border rounded-lg">
+              <div key={index} className="space-y-2 p-4 shadow-md rounded-lg">
                 <div className="flex justify-between items-center">
                   <h4 className="font-medium">Education {index + 1}</h4>
                   <Button
@@ -559,40 +600,39 @@ const ResumeEditor = () => {
                 />
               </div>
             ))}
-            <Button onClick={addEducation} className="w-full">
-              <Plus className="h-4 w-4 mr-2" />
-              Add Education
-            </Button>
-          </AccordionContent>
-        </AccordionItem>
+          </div>
+          <Button onClick={addEducation} className="w-full">
+            <Plus className="h-4 w-4 mr-2" />
+            Add Education
+          </Button>
+        </TabsContent>
 
         {/* Skills */}
-        <AccordionItem value="skills" className="rounded-lg">
-          <AccordionTrigger className="p-2">Skills</AccordionTrigger>
-          <AccordionContent className="space-y-4 p-2">
-            {Object.entries(resumeData.skills).map(([category, skills]) => (
-              <div key={category} className="space-y-2">
-                <h4 className="font-medium capitalize">{category}</h4>
-                <Textarea
-                  value={skills.join("\n")}
-                  onChange={(e) =>
-                    handleSkillsChange(
-                      category as keyof ResumeData["skills"],
-                      e.target.value.split("\n")
-                    )
-                  }
-                />
-              </div>
-            ))}
-          </AccordionContent>
-        </AccordionItem>
+        <TabsContent value="skills" className="space-y-4 p-4 border rounded-lg">
+          <h3 className="text-lg font-medium mb-4">Skills</h3>
+          {Object.entries(resumeData.skills).map(([category, skills]) => (
+            <div key={category} className="space-y-2">
+              <h4 className="font-medium capitalize">{category}</h4>
+              <Textarea
+                value={skills.join("\n")}
+                onChange={(e) =>
+                  handleSkillsChange(
+                    category as keyof ResumeData["skills"],
+                    e.target.value.split("\n")
+                  )
+                }
+              />
+            </div>
+          ))}
+        </TabsContent>
 
         {/* Projects */}
-        <AccordionItem value="projects" className="rounded-lg">
-          <AccordionTrigger className="p-2">Projects</AccordionTrigger>
-          <AccordionContent className="space-y-4 p-2">
+        <TabsContent value="projects" className="space-y-4 p-4 rounded-lg">
+          {/* <h3 className="text-lg font-medium mb-4">Projects</h3> */}
+
+          <div className=" grid grid-cols-2 gap-4 ">
             {resumeData.projects.map((proj, index) => (
-              <div key={index} className="space-y-2 p-4 border rounded-lg">
+              <div key={index} className="space-y-2 p-4 shadow-md rounded-lg">
                 <div className="flex justify-between items-center">
                   <h4 className="font-medium">Project {index + 1}</h4>
                   <Button
@@ -657,15 +697,15 @@ const ResumeEditor = () => {
                 />
               </div>
             ))}
-            <Button onClick={addProject} className="w-full">
-              <Plus className="h-4 w-4 mr-2" />
-              Add Project
-            </Button>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+          </div>
+          <Button onClick={addProject} className="w-full">
+            <Plus className="h-4 w-4 mr-2" />
+            Add Project
+          </Button>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
 
-export default ResumeEditor; 
+export default ResumeEditor;
