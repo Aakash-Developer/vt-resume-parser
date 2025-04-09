@@ -1,12 +1,15 @@
 import { memo } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import ResumeEditor from "@/components/resume/ResumeEditor";
-import { ResumePreview } from "../components/ResumePreview";
-import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router";
+import { setParsedResume } from "@/store/features/app";
+import { setResume } from "@/store/features/app";
 
 const MainLayout = memo(() => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const parsedResume = useSelector(
     (state: RootState) => state.app.parsedResume
   );
@@ -15,12 +18,21 @@ const MainLayout = memo(() => {
     return null;
   }
 
+  const createNewResume = () => {
+    dispatch(setResume(null));
+    dispatch(setParsedResume(null));
+    navigate("/");
+  };
+
   return (
     <div className=" grid grid-rows-[auto_1fr] h-screen p-2">
-      <div className=" px-4 flex justify-end">
-        <Link to="/preview-download">
-          <Button>Preview & Download</Button>
-        </Link>
+      <div className=" px-4 flex  justify-between gap-2">
+        <Button onClick={createNewResume}>
+          Create New Resume
+        </Button>
+        <Button onClick={() => navigate("/preview-download")}>
+          Preview & Download
+        </Button>
       </div>
       <div className=" p-4 overflow-auto">
         <ResumeEditor />

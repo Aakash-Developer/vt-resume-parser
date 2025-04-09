@@ -12,6 +12,7 @@ import {
   generateSummaryContent,
 } from "@/utils/openai";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { toast } from "sonner";
 
 const ResumeEditor = () => {
   const dispatch = useDispatch();
@@ -77,7 +78,7 @@ const ResumeEditor = () => {
           ? data.skills.coreCompetencies
           : [],
       },
-      projects: data.projects.map((proj) => ({
+      projects: data.projects?.map((proj) => ({
         title: proj.title || "",
         description: proj.description?.length ? proj.description : [""],
         technologies: proj.technologies?.length ? proj.technologies : [],
@@ -323,8 +324,13 @@ const ResumeEditor = () => {
           };
         });
       }
-    } catch (error) {
-      console.error("Error generating summary:", error);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Please check your input and try again.";
+      toast.error("Failed to generate summary", {
+        description: errorMessage,
+        duration: 5000,
+        descriptionClassName: "bg-black text-white p-2 rounded-md",
+      });
     } finally {
       setIsGeneratingSummary(false);
     }
@@ -352,9 +358,17 @@ const ResumeEditor = () => {
             ),
           };
         });
+        toast.success("Experience content generated successfully!", {
+          description: "The AI has updated your experience description.",
+        });
       }
-    } catch (error) {
-      console.error("Error generating experience description:", error);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Please check your input and try again.";
+      toast.error("Failed to generate experience content", {
+        description: errorMessage,
+        duration: 5000,
+        descriptionClassName: "bg-black text-white p-2 rounded-md",
+      });
     } finally {
       setIsGeneratingExperience(null);
     }
@@ -631,7 +645,7 @@ const ResumeEditor = () => {
           {/* <h3 className="text-lg font-medium mb-4">Projects</h3> */}
 
           <div className=" grid grid-cols-2 gap-4 ">
-            {resumeData.projects.map((proj, index) => (
+            {resumeData.projects?.map((proj, index) => (
               <div key={index} className="space-y-2 p-4 shadow-md rounded-lg">
                 <div className="flex justify-between items-center">
                   <h4 className="font-medium">Project {index + 1}</h4>
@@ -693,6 +707,31 @@ const ResumeEditor = () => {
                   value={proj.role}
                   onChange={(e) =>
                     handleProjectChange(index, "role", e.target.value)
+                  }
+                />
+                <Input
+                  placeholder="Institution"
+                  value={proj.institution}
+                  onChange={(e) =>
+                    handleProjectChange(index, "institution", e.target.value)
+                  }
+                />
+                <Input
+                  placeholder="Location"
+                  value={proj.location}
+                  onChange={(e) =>
+                    handleProjectChange(index, "location", e.target.value)
+                  }
+                />
+                <Input
+                  placeholder="Links (comma-separated)"
+                  value={proj.links?.join(", ") || ""}
+                  onChange={(e) =>
+                    handleProjectChange(
+                      index,
+                      "links",
+                      e.target.value.split(",").map((link) => link.trim())
+                    )
                   }
                 />
               </div>

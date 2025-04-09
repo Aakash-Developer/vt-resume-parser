@@ -89,6 +89,12 @@ export async function resumeParserAPI(resumeText: string) {
                    - Remove any extra whitespace
                    - Include all competencies as separate items in the array
                 10. **The Projects section is optional. If available, parse it like experience or education.**
+                11. For Projects:
+                   - ALWAYS extract location information if available
+                   - ALWAYS extract institution information if available
+                   - ALWAYS extract links (GitHub, live demo, etc.) if available
+                   - Look for phrases like "Location:", "Institution:", "Links:", "GitHub:", etc.
+                   - For links, extract both the URL and any descriptive text
                 
                 Return ONLY the JSON object, no additional text.`,
         },

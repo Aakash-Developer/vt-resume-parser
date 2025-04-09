@@ -133,3 +133,44 @@
       linear-gradient(90deg, transparent 24%, var(--color) 25%, var(--color) 26%, transparent 27%,transparent 74%, var(--color) 75%, var(--color) 76%, transparent 77%,transparent);
   background-size: 55px 55px;
 }
+
+
+
+body {
+  --sb-track-color: #000000;
+  --sb-thumb-color: #6BAF8D;
+  --sb-size: 4px;
+}
+
+body::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+body::-webkit-scrollbar-track {
+  background: #1e1e1e;
+  border-radius: 10px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: #6BAF8D;
+  border-radius: 10px;
+  border: 2px solid #1e1e1e;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: #5a9e7c;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #6BAF8D #1e1e1e;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  body {
+    scrollbar-color: var(--sb-thumb-color)
+                     var(--sb-track-color);
+  }
+}

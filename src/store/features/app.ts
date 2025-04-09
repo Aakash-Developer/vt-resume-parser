@@ -13,9 +13,9 @@ const initialState: AppState = {
         "name": "MONISH",
         "title": "DATA ANALYST | MACHINE LEARNING ENGINEER",
         "email": "email@example.com",
-        "phone": "Phone Number",
+        "phone": "Phone",
         "location": "Current Location",
-        "linkedin": "LinkedIn Profile",
+        "linkedin": "LinkedIn",
         "summary": "Innovative and results-driven Data Professional with expertise in data analysis, machine learning, and cloud technologies. Adept at developing predictive models, enhancing system security, and implementing cloud-based solutions. Proven track record in building data pipelines, analyzing genomic data, and delivering actionable insights. Experienced in collaborating with cross-functional teams and driving project success."
     },
     "experience": [
@@ -57,8 +57,9 @@ const initialState: AppState = {
             "field": "",
             "location": "Hoboken, New Jersey",
             "startDate": "May 2024",
-            "endDate": "",
-            "gpa": "3.97/4.0"
+            "endDate": "May 2024",
+            "gpa": "3.97/4.0",
+            "achievements": []
         },
         {
             "institution": "Anna University",
@@ -66,8 +67,9 @@ const initialState: AppState = {
             "field": "",
             "location": "India",
             "startDate": "May 2021",
-            "endDate": "",
-            "gpa": "7.7/10.0"
+            "endDate": "May 2021",
+            "gpa": "7.7/10.0",
+            "achievements": []
         }
     ],
     "skills": {
@@ -94,29 +96,19 @@ const initialState: AppState = {
             "NumPy"
         ],
         "soft": [
-            "Data Analysis & Visualization",
-            "Machine Learning Model Development",
-            "Regression & Predictive Analysis",
-            "Big Data Analysis & MapReduce",
-            "Cloud Infrastructure (AWS, Azure)",
-            "API Security & Optimization",
-            "Web Scraping & Data Mining",
-            "Data Pipeline Development",
             "Project Management",
             "Agile & Scrum Methodologies",
-            "Database Design & Management",
-            "Code Optimization & Efficiency",
-            "Secure Cloud Architecture",
-            "Time Management"
+            "Time Management",
+            "Leadership & Mentorship",
+            "Team Collaboration",
+            "Adaptability",
+            "Critical Thinking"
         ],
         "tools": [
             "Tableau",
             "Power BI",
             "Seaborn",
             "Matplotlib",
-            "Amazon Web Services (AWS)",
-            "Azure",
-            "Google Cloud",
             "Android Studio",
             "Microsoft Office Suite (Word, Excel, PowerPoint)",
             "Visual Studio",
@@ -146,7 +138,11 @@ const initialState: AppState = {
             "Database Design & Management",
             "Code Optimization & Efficiency",
             "Secure Cloud Architecture",
-            "Time Management"
+            "Time Management",
+            "Leadership & Mentorship",
+            "Team Collaboration",
+            "Adaptability",
+            "Critical Thinking"
         ]
     },
     "projects": [
@@ -163,7 +159,10 @@ const initialState: AppState = {
             ],
             "startDate": "Jan 2023",
             "endDate": "May 2023",
-            "role": ""
+            "role": "Developer",
+            "institution": "Stevens Institute of Technology",
+            "location": "Hoboken, New Jersey",
+            "links": []
         },
         {
             "title": "Android Health Check",
@@ -176,7 +175,10 @@ const initialState: AppState = {
             ],
             "startDate": "Sep 2023",
             "endDate": "Dec 2023",
-            "role": ""
+            "role": "Team Lead",
+            "institution": "Stevens Institute of Technology",
+            "location": "Hoboken, New Jersey",
+            "links": []
         },
         {
             "title": "Drowsiness Detection",
@@ -193,7 +195,10 @@ const initialState: AppState = {
             ],
             "startDate": "Sep 2022",
             "endDate": "Dec 2022",
-            "role": ""
+            "role": "Team Lead",
+            "institution": "Stevens Institute of Technology",
+            "location": "Hoboken, New Jersey",
+            "links": []
         },
         {
             "title": "Emotion-Based Music Recommender",
@@ -207,7 +212,10 @@ const initialState: AppState = {
             ],
             "startDate": "Sep 2022",
             "endDate": "Dec 2022",
-            "role": ""
+            "role": "Designer",
+            "institution": "Stevens Institute of Technology",
+            "location": "Hoboken, New Jersey",
+            "links": []
         }
     ]
 },

@@ -36,29 +36,48 @@ export async function generateExperienceContent(jd: string | null, company: stri
     ? `Generate professional experience content for a ${position} role at ${company}. 
     Job Description: ${jd}
     
-    IMPORTANT: Generate EXACTLY 5-6 detailed bullet points in the following format:
+    IMPORTANT: Generate EXACTLY 6-7 detailed bullet points with 80-90% match to the job description in the following format:
     
     DESCRIPTION:
-    • First bullet point with specific metrics
-    • Second bullet point with specific metrics
-    • Third bullet point with specific metrics
-    • Fourth bullet point with specific metrics
-    • Fifth bullet point with specific metrics
-    • Sixth bullet point with specific metrics (optional)
+    • First bullet point with specific metrics that directly match job requirements
+    • Second bullet point with specific metrics that directly match job requirements
+    • Third bullet point with specific metrics that directly match job requirements
+    • Fourth bullet point with specific metrics that directly match job requirements
+    • Fifth bullet point with specific metrics that directly match job requirements
+    • Sixth bullet point with specific metrics that directly match job requirements
+    • Seventh bullet point with specific metrics that directly match job requirements (optional)
     
     ACHIEVEMENTS:
-    • First achievement with specific metrics
-    • Second achievement with specific metrics
-    • Third achievement with specific metrics
-    • Fourth achievement with specific metrics
-    • Fifth achievement with specific metrics
-    • Sixth achievement with specific metrics (optional)
+    • First achievement with specific metrics that directly match job requirements
+    • Second achievement with specific metrics that directly match job requirements
+    • Third achievement with specific metrics that directly match job requirements
+    • Fourth achievement with specific metrics that directly match job requirements
+    • Fifth achievement with specific metrics that directly match job requirements
+    • Sixth achievement with specific metrics that directly match job requirements
+    • Seventh achievement with specific metrics that directly match job requirements (optional)
+    
+    CRITICAL REQUIREMENTS:
+    1. ALWAYS include industry-specific experience that matches the job description (e.g., e-commerce, healthcare, finance, etc.)
+    2. ALWAYS include specific, measurable achievements with numbers, percentages, or other quantifiable metrics
+    3. ALWAYS incorporate relevant keywords from the job description (e.g., 'analyst', 'e-commerce', 'remote work', etc.)
+    4. ALWAYS align the experience with the specific role requirements mentioned in the job description
+    5. ALWAYS highlight transferable skills that are relevant to the position
+    6. ALWAYS address location alignment - if the job is in a specific country/region, ensure experience is relevant to that market
+    7. ALWAYS include at least 3 bullet points with specific metrics (e.g., "increased revenue by 25%", "reduced costs by $50,000", "improved efficiency by 40%")
+    8. ALWAYS bridge any skill gaps - if the candidate's background is in a different field (e.g., software engineering), highlight how those skills transfer to the target role (e.g., analyst)
+    9. ALWAYS emphasize relevant tools and technologies mentioned in the job description, even if the candidate's experience with them is limited
+    10. ALWAYS focus on the most recent and relevant experience that aligns with the job requirements
+    11. ALWAYS extract and use specific skills, tools, and technologies mentioned in the job description
+    12. ALWAYS ensure each bullet point directly addresses at least one requirement from the job description
+    13. ALWAYS prioritize matching the most important requirements from the job description
+    14. ALWAYS use the exact terminology and phrasing found in the job description when possible
     
     Focus on quantifiable results and align the experience with the job requirements.
-    Make each point impactful and specific to the role.`
+    Make each point impactful and specific to the role.
+    Ensure 80-90% match with the job description requirements.`
     : `Generate professional experience content for a ${position} role at ${company}.
     
-    IMPORTANT: Generate EXACTLY 5-6 detailed bullet points in the following format:
+    IMPORTANT: Generate EXACTLY 6-7 detailed bullet points in the following format:
     
     DESCRIPTION:
     • First bullet point with specific metrics
@@ -66,7 +85,8 @@ export async function generateExperienceContent(jd: string | null, company: stri
     • Third bullet point with specific metrics
     • Fourth bullet point with specific metrics
     • Fifth bullet point with specific metrics
-    • Sixth bullet point with specific metrics (optional)
+    • Sixth bullet point with specific metrics
+    • Seventh bullet point with specific metrics (optional)
     
     ACHIEVEMENTS:
     • First achievement with specific metrics
@@ -74,7 +94,20 @@ export async function generateExperienceContent(jd: string | null, company: stri
     • Third achievement with specific metrics
     • Fourth achievement with specific metrics
     • Fifth achievement with specific metrics
-    • Sixth achievement with specific metrics (optional)
+    • Sixth achievement with specific metrics
+    • Seventh achievement with specific metrics (optional)
+    
+    CRITICAL REQUIREMENTS:
+    1. ALWAYS include industry-specific experience relevant to the position
+    2. ALWAYS include specific, measurable achievements with numbers, percentages, or other quantifiable metrics
+    3. ALWAYS highlight transferable skills that are relevant to the position
+    4. ALWAYS make each point impactful and specific to the role
+    5. ALWAYS include at least 3 bullet points with specific metrics (e.g., "increased revenue by 25%", "reduced costs by $50,000", "improved efficiency by 40%")
+    6. ALWAYS bridge any skill gaps - if the candidate's background is in a different field, highlight how those skills transfer to the target role
+    7. ALWAYS emphasize relevant tools and technologies for the position, even if the candidate's experience with them is limited
+    8. ALWAYS focus on the most recent and relevant experience that aligns with the position requirements
+    9. ALWAYS ensure each bullet point directly addresses common requirements for this position
+    10. ALWAYS use industry-standard terminology for this role
     
     Focus on common responsibilities and achievements for this role. 
     Make each point impactful and specific to the role.`;
@@ -139,9 +172,25 @@ export async function generateProjectContent(jd: string | null, title: string) {
   const prompt = jd
     ? `Generate professional project content for: ${title}
     Job Description: ${jd}
-    Generate 2-3 bullet points for description, 4-5 technologies, and 3-4 achievements. Focus on technical impact and measurable results.`
+    
+    Generate 2-3 bullet points for description, 4-5 technologies, and 3-4 achievements. 
+    
+    CRITICAL REQUIREMENTS:
+    1. ALWAYS include specific, measurable achievements with numbers, percentages, or other quantifiable metrics
+    2. ALWAYS incorporate relevant keywords from the job description
+    3. ALWAYS include at least 2 bullet points with specific metrics (e.g., "reduced processing time by 30%", "increased user engagement by 45%")
+    4. ALWAYS address location alignment - if the job is in a specific country/region, ensure project experience is relevant to that market
+    
+    Focus on technical impact and measurable results.`
     : `Generate professional project content for: ${title}
-    Focus on common technical aspects and achievements for this type of project. Generate 2-3 bullet points for description, 4-5 technologies, and 3-4 achievements.`;
+    
+    Generate 2-3 bullet points for description, 4-5 technologies, and 3-4 achievements. 
+    
+    CRITICAL REQUIREMENTS:
+    1. ALWAYS include specific, measurable achievements with numbers, percentages, or other quantifiable metrics
+    2. ALWAYS include at least 2 bullet points with specific metrics (e.g., "reduced processing time by 30%", "increased user engagement by 45%")
+    
+    Focus on common technical aspects and achievements for this type of project.`;
 
   const content = await generateAIContent(prompt, 'project');
   const sections = content?.split('\n\n') || [];
@@ -157,8 +206,20 @@ export async function generateEducationContent(jd: string | null, institution: s
   const prompt = jd
     ? `Generate professional education content for ${degree} in ${field} from ${institution}.
     Job Description: ${jd}
+    
+    CRITICAL REQUIREMENTS:
+    1. ALWAYS include specific, measurable academic achievements (e.g., GPA, honors, awards)
+    2. ALWAYS incorporate relevant keywords from the job description
+    3. ALWAYS highlight coursework or projects that align with the job requirements
+    4. ALWAYS address location alignment - if the job is in a specific country/region, ensure education is relevant to that market
+    
     Generate 3-4 relevant academic achievements and accomplishments.`
     : `Generate professional education content for ${degree} in ${field} from ${institution}.
+    
+    CRITICAL REQUIREMENTS:
+    1. ALWAYS include specific, measurable academic achievements (e.g., GPA, honors, awards)
+    2. ALWAYS highlight coursework or projects that align with the field of study
+    
     Focus on common academic achievements and accomplishments for this degree and field. Generate 3-4 relevant achievements.`;
 
   const content = await generateAIContent(prompt, 'education');
@@ -171,9 +232,21 @@ export async function generateEducationContent(jd: string | null, institution: s
 export async function generateSummaryContent(jd: string | null, summary: string) {
   const prompt = jd
     ? `Write a professional summary based on the following job description: ${jd}
+    
+    CRITICAL REQUIREMENTS:
+    1. ALWAYS highlight specific, measurable achievements that match the job requirements
+    2. ALWAYS incorporate relevant keywords from the job description
+    3. ALWAYS address location alignment - if the job is in a specific country/region, ensure experience is relevant to that market
+    4. ALWAYS keep the summary concise (3-4 sentences) and focused on the most relevant qualifications
+    
     Focus on highlighting relevant skills, experience, and achievements that match the job requirements.
     Write the summary directly without any prefix or header.`
     : `Write a professional summary based on the following content: ${summary}
+    
+    CRITICAL REQUIREMENTS:
+    1. ALWAYS highlight specific, measurable achievements
+    2. ALWAYS keep the summary concise (3-4 sentences) and focused on the most relevant qualifications
+    
     Focus on creating a compelling narrative that highlights key strengths and career objectives.
     Write the summary directly without any prefix or header.`;
 
